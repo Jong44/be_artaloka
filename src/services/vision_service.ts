@@ -24,7 +24,11 @@ export class VisionService {
 
             return detections[0].description || '';
         } catch (error) {
-            throw new Error(`Vision API error: ${error.message}`)
+          if (error instanceof Error) {
+            throw new Error(`Text extraction failed: ${error.message}`);
+          } else {
+            throw new Error('An unknown error occurred during text extraction');
+          }
         }
     }
 
@@ -62,7 +66,11 @@ export class VisionService {
 
       return JSON.parse(content);
     } catch (error) {
-      throw new Error(`LLM processing failed: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`LLM processing failed: ${error.message}`);
+      } else {
+        throw new Error('An unknown error occurred during LLM processing');
+      }
     }
   }
 }

@@ -64,7 +64,7 @@ export async function POST(request: Request) {
         console.error('Receipt scan error:', error);
         return new Response(JSON.stringify({
             success: false,
-            message: error.message || 'Internal server error'
+            message: 'Internal server error'
         }), { status: 500 });
     }
 }

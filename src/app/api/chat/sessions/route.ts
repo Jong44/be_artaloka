@@ -11,6 +11,8 @@ export async function POST(request: Request) {
         return new Response(JSON.stringify({ success: true, message: "Session created successfully", data: sessionId }), { status: 201 });
     } catch (error) {
         console.error('Error creating session:', error);
-        return new Response(JSON.stringify({ success: false, message: error.message }), { status: 500 });
+        if (error instanceof Error) {
+            return new Response(JSON.stringify({ success: false, message: error.message }), { status: 500 });
+        }
     }
 }

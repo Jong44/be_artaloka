@@ -38,7 +38,11 @@ export class ExpenseService {
 
       return expenseData.id_expense;
     } catch (error) {
-      throw new Error(`Database save failed: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Database save failed: ${error.message}`);
+      } else {
+        throw new Error('An unknown error occurred while saving expenses');
+      }
     }
   }
 
@@ -60,7 +64,11 @@ export class ExpenseService {
       return data as Expense[];
     }
     catch (error) {
-      throw new Error(`Database fetch failed: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Database fetch failed: ${error.message}`);
+      } else {
+        throw new Error('An unknown error occurred while fetching expenses');
+      }
     }
   }
 
@@ -175,7 +183,9 @@ export class ExpenseService {
       }
       };
     } catch (error) {
-      throw new Error(`Database fetch failed: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Database fetch failed: ${error.message}`);
+      }
     }
   }
 }
