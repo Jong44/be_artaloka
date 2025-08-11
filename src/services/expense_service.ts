@@ -90,15 +90,22 @@ export class ExpenseService {
 
       if (error) throw error;
 
+      let category:any = [];
+      data.forEach(expense => {
+        const categoryName = expense.category || 'Uncategorized';
+        const existingCategory = category.find((cat: any) => cat.name === categoryName);
+        if (existingCategory) {
+          existingCategory.total += expense.total_price;
+        } else {
+          category.push({
+            name: categoryName,
+            total: expense.total_price
+          });
+        }
+      });
+
       return {
-        totalExpensesByCategory: data.reduce((acc, expense) => {
-          const category = expense.category || 'Uncategorized';
-          if (!acc[category]) {
-            acc[category] = 0;
-          }
-          acc[category] += expense.total_price;
-          return acc;
-        }, {}),
+        totalExpensesByCategory: category,
         totalExpensesByCategoryBudget: data.reduce((acc, expense) => {
           const category = expense.category_budget || 'Uncategorized';
           if (!acc[category]) {
@@ -125,7 +132,8 @@ export class ExpenseService {
             return expenseDate.getMonth() === today.getMonth() && expenseDate.getFullYear() === today.getFullYear();
           }).reduce((acc, expense) => {
             const weekNumber = Math.floor((new Date(expense.date).getTime() - new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime()) / (1000 * 60 * 60 * 24 * 7));
-            acc[weekNumber] = (acc[weekNumber] || 0) + 1;
+            // return total expenses per week
+            acc[weekNumber] = (acc[weekNumber + '_total'] || 0) + expense.total_price;
             return acc;
           }, {})
         },
@@ -151,7 +159,7 @@ export class ExpenseService {
           }
         ).reduce((acc, expense) => {
             const day = new Date(expense.date).getDate();
-            acc[day] = (acc[day] || 0) + 1;
+            acc[day] = (acc[day] || 0) + expense.total_price;
             return acc;
           }, {})
         },
@@ -177,7 +185,7 @@ export class ExpenseService {
             return expenseDate.getFullYear() === today.getFullYear();
           }).reduce((acc, expense) => {
             const month = new Date(expense.date).getMonth();
-            acc[month] = (acc[month] || 0) + 1;
+            acc[month] = (acc[month] || 0) + expense.total_price;
             return acc;
           }, {})
       }

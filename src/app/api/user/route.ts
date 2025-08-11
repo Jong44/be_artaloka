@@ -17,11 +17,13 @@ export async function POST(request: Request) {
             financial_goals,
             agent_role
         };
+        console.log("Inserting personal data:", personalData);
         const result = await userService.insertPersonalData(userId, personalData);
+        console.log("Personal data insertion result:", result);
         if (!result) {
             return new Response(JSON.stringify({ error: "Failed to insert personal data" }), { status: 400 });
         }
-        return new Response(JSON.stringify({ message: "Personal data inserted successfully", data: result }), { status: 201 });
+        return new Response(JSON.stringify({ message: "Personal data inserted successfully", data: result, success: true }), { status: 201 });
 
     }
     catch (error) {
